@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>AvelResearch FB Graph API Testing</title>
+  <link rel="stylesheet" href="https://bootswatch.com/4/darkly/bootstrap.min.css">
+
+  <style>
+    #profile, #logout, #feed{display: none;}
+  </style>
+</head>
+
+<body>
+  <!-- Start of Graph API Quickstart Script -->
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '2138893219771242',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v2.9'
+      });
+        
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      }); 
+        
+    };
+
+    (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    function statusChangeCallback(response){
+      if(response.status === 'connected'){
+        console.log('Logged in and authenticated');
+        setElements(true);
+
+        //Here we test the Graph API accessability
+        testAPI();
+      }
+      else{
+        console.log('NOT authenticated');
+        setElements(false);
+      }
+    }
+
+    function checkLoginState() {
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      });
+    }
+
+    function setElements(isLoggedIn){
+      if(isLoggedIn){
+        document.getElementById('logout').style.display = 'block';
+        document.getElementById('profile').style.display = 'block';
+        document.getElementById('feed').style.display = 'block';
+        document.getElementById('fb-btn').style.display = 'none';
+        document.getElementById('heading').style.display = 'none';
+      }
+      else{
+        document.getElementById('logout').style.display = 'none';
+        document.getElementById('profile').style.display = 'none';
+        document.getElementById('feed').style.display = 'none';
+        document.getElementById('fb-btn').style.display = 'block';
+        document.getElementById('heading').style.display = 'block';
+      }
+    }
+
+    function logout(){
+      FB.logout(function(response){
+        setElements(false);
+      });
+    }
+    
+    //Here the authenticated user's data is being used
+    function testAPI(){
+      FB.api('/me?fields=name,email,birthday,location', function(response){
+        if(response && !response.error){
+          console.log(response);
+          buildProfile(response);
+        }
+        FB.api('me/feed', function(response){
+          if(response && !response.error){
+          console.log(response);
+          buildFeed(response);
+        }
+        });
+      });
+    }
+
+    function buildProfile(user){
+      let profile = `
+        <h3>${user.name}</h3>
+        <ul class="list-group">
+          <li class="list-group-item">User ID: ${user.id}</li>
+          <li class="list-group-item">User Email: ${user.email}</li>
+          <li class="list-group-item">User Birthday: ${user.birthday}</li>
+          <li class="list-group-item">User Location: ${user.location.name}</li>
+        </ul>
+      `;
+      document.getElementById('profile').innerHTML = profile;
+    }
+
+    function buildFeed(feed){
+      let output = '<h3>Latest Posts</h3>';
+      for(let i in feed.data){
+        if(feed.data[i].message){
+          output += `
+            <blockquote class="blockquote">
+              <p>${feed.data[i].message}</p>
+              <footer class="blockquote-footer">${feed.data[i].created_time}</footer>
+            </blockquote>
+          `
+        }
+      }
+      document.getElementById('feed').innerHTML = output;
+    }
+
+
+
+  </script>
+  <!-- End of Graph API Quickstart Script-->
+
+  <!-- Start of navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="#">AvelReserch FB Test</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarColor01">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Home</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav navbar-right">
+          <li class="nav-item">
+              <li><a href="#" id="logout" onclick="logout();">Logout</a></li>
+              <!-- LogIn/LogOut FB button -->
+              <fb:login-button 
+                id="fb-btn"
+                scope="public_profile,email,user_birthday,user_location,user_posts" 
+                onlogin="checkLoginState();">
+              </fb:login-button>
+              <!-- End of FB Button-->
+          </li>
+        </ul>
+    </div>
+  </nav>
+  <!-- End of navbar -->
+  <div class="container">
+    <h3 id="heading">Log in to view your Profile</h3>
+    <!-- Placeholder div for User's profile info -->
+    <div id="profile"></div>
+    <!-- Placeholder div for User's posts -->
+    <div id="feed"></div>
+
+  </div>
+</body>
+</html>
