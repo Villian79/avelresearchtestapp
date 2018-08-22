@@ -1,10 +1,10 @@
 #! python3
 #This is the script to access data from the Facebook user profile
 #In order to use the Graph API we should register our app on https://developers.facebook.com
-#After the registration and confirmation process is finished we can obtain 
+#After the registration and confirmation process is finished we can obtain ACCESS TOKEN
 
 #To run this script make sure to install 3rd party Python module Facepy: https://github.com/jgorset/facepy
-#To do so run this command in your command line: pip install facepy
+#To do so run this command in your command line: `pip install facepy`
 
 from facepy import GraphAPI
 import os, re
