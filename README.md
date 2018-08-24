@@ -11,23 +11,20 @@ This script allows to extract FB User's public personal data and public posts an
 
 Make sure to run this script in Python.3.x environment
 
-Add configuration details in `config.ini` file:
-- `access_token` - value of the access token issued by Graph API
-- `user_id` - target User's FB id
+Executing the script:
+- `git clone https://github.com/Villian79/avelresearchtestapp.git`
+- `cd avelresearchtestapp`
+- `pip install facepy` - installing 3rd party Python module [Facepy](https://github.com/jgorset/facepy)
+- `python user_posts.py`
 
-Install 3rd party Python module [Facepy](https://github.com/jgorset/facepy)<br/>
-To do so run this command in your command line: `pip install facepy`
+Add configuration details in `config.ini` file:
+- `access_token` - current value of the access token issued by Graph API
+- `user_id` - target User's FB id
 
 Note:<br/>
 At the moment owner of the current app has access only to his personal data.<br/>
 To get full access to FB Graph API endpoints potentional real app owner has to submit additional.<br/>
 information to FB. After review permissions to use certain query endpoints will be granted by FB.<br/>
-
----
-
-Enter directory where the file user_posts.py is located.<br/>
-Run command `python user_posts.py` from within that directory.<br/>
-
 
 ---
 ### Usage
