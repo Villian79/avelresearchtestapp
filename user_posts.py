@@ -1,5 +1,4 @@
 #! python3
-
 from facepy import GraphAPI
 import os, re
 from pprint import pprint
