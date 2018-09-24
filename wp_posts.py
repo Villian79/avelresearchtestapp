@@ -28,11 +28,22 @@ feed = graph.get(USER_ID + '?fields=feed.order(chronological).limit(100)')
 #Create an instance of WP client
 wp = Client(WP_SITE_LINK, WP_USERNAME, WP_PASSWORD)
 
-#Check if FB post contains 'message' field
+wp_posts = wp.call(posts.GetPosts())
+
+#Create a list of all existing FB ids in our blog
+wp_post_fb_ids = []
+for wp_post in wp_posts:
+  wp_post_fb_ids.append(wp_post.custom_fields[0]['value'])
+
+#Check if FB post contains 'message' field 
 user_posts = []
 for post in feed['feed']['data']:
-  if 'message' in post:
-    user_posts.append(post)
+  if post['id'] in wp_post_fb_ids:
+    print('Post is already in database')
+  else:
+    if 'message' in post:
+      user_posts.append(post)
+      print('Post with id ' + post['id'] + ' was added to the database')
 
 for user_post in user_posts:
   #Post creation and publishing
@@ -40,4 +51,5 @@ for user_post in user_posts:
   post.title = 'Exciting new post: ' + user_post['id']
   post.content = user_post['message']
   post.post_status = 'publish'
+  post.custom_fields = [{'key': 'facebook_id', 'value': user_post['id']}]
   wp.call(NewPost(post))
