@@ -28,7 +28,7 @@ feed = graph.get(USER_ID + '?fields=feed.order(chronological).limit(100)')
 #Create an instance of WP client
 wp = Client(WP_SITE_LINK, WP_USERNAME, WP_PASSWORD)
 
-wp_posts = wp.call(posts.GetPosts())
+wp_posts = wp.call(posts.GetPosts({'number': 1000, 'orderby': 'date', 'order': 'DESC', 'post_status': 'publish'}))
 
 #Create a list of all existing FB ids in our blog
 wp_post_fb_ids = []
